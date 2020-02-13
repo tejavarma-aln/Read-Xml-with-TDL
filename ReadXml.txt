@@ -1,0 +1,103 @@
+
+
+;; collection to read data from xml file
+
+
+[Collection:XMLDataColl]
+	Data Source:File XML:"Cd.xml"  ;; path to the file 
+	XML Object Path:CATALOG:1  ;; block we want to fetch
+	
+
+[Collection:CDCollection]
+	Source Collection:XMLDataColl
+	Source PreFetch: CD.*  ; for performance concern
+	Walk:CD
+	Compute:Title:$TITLE
+	Compute:Artist:$Artist
+	Compute:Country:$Country
+	Compute:Company:$Company
+	Compute:Price:$Price
+	Compute:Year:$Year
+	
+
+
+;;let me quickly create a report to show the data
+
+	
+[#Menu:GateWayOfTally]
+	 Add:Item:CD Info:Display:CD Info
+	 
+[Report:CD Info]
+	Form:CD Info
+	Title:"CD Information "
+	
+[Form:CD Info]
+	Part:CD Info
+	Button:PrintButton,ExportButton
+	
+[Part:CD Info ]
+	Line:CDColumn,CDBody
+	Repeat:CDBody:CDCollection
+	Width:100% page
+	Height:100% page
+	Scroll:Vertical
+	Common Border:Yes
+	
+[Line:CDColumn]
+	Border:ThickTopBottom
+	Space Top:0.5
+	Fields:CDtitle,CDartist,CDcountry,CDcompany,CDprice,CDyear
+	Local:Field:CDtitle:Set as:"Title"
+	Local:Field:CDartist:Set as:"Artist"
+	Local:Field:CDcountry:Set as:"Country"
+	Local:Field:CDcompany:Set as:"Company"
+	Local:Field:CDprice:Set as:"Price"
+	Local:Field:CDyear:Set as:"Year"
+	Local:Field:default:Border:thinright
+	Local:Field:default:Style:CDHdStyle
+	Local:Field:default:Align:Left
+
+[Line:CDBody]
+	Fields:CDtitle,CDartist,CDcountry,CDcompany,CDprice,CDyear
+	Border:thinbottom
+	Space Top:0.5
+	Local:Field:default:Style:CDStyle
+	Local:Field:default:Align:Left
+	Local:Field:default:Border:thinright
+	
+[Field:CDtitle]
+	Set as:$Title
+	Width:30
+	
+[Field:CDartist]
+	Set as:$Artist
+	Width:30
+	
+[Field:CDcountry]
+	Set as:$Country
+	Width:20
+	
+[Field:CDcompany]
+	Set as:$Company
+	Width:20
+	
+[Field:CDprice]
+	Set as:$Price
+	Width:20
+	
+[Field:CDyear]
+	Set as:$Year
+	Width:15
+	
+[Style:CDStyle]
+	Font:"Sans-serif"
+	Height:12
+
+[Style:CDHdStyle]
+	Font:"Sans-Serif"
+	Height:12
+	Bold:yes
+
+
+
+;; Load and Run
